@@ -1,11 +1,15 @@
 // Video Stream Resolution and Screen Size
+var config = {
+  sdpSemantics: 'unified-plan',
+  iceServers: [{urls: ['stun:stun.l.google.com:19302']}]
+}
 var resolutions = [[640,480],[1280,720]],
     resolution = resolutions[0],
     videoHeight = resolution[1],
     videoWidth = resolution[0],
     screenHeight = screen.height,
     screenWidth = screen.width,
-    pc = new RTCPeerConnection(),
+    pc = new RTCPeerConnection(config),
     video = document.querySelector('#live');
 // Data Channel Communication
 var dc = null,
