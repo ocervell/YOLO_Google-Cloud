@@ -89,29 +89,29 @@ detectionData.start()
 
 async def index(request):
     filepath = os.path.join(ROOT + '/public/', 'index.html')
-    LOGGING.info("index: new request for %s" % filepath)
+    LOGGER.info("index: new request for %s" % filepath)
     with open(filepath, 'r') as f:
         content = f.read()
     return web.Response(content_type='text/html', text=content)
 
 async def javascript(request):
     filepath = os.path.join(ROOT + '/public/', 'client.js')
-    LOGGING.info("javascript: new request for %s" % filepath)
+    LOGGER.info("javascript: new request for %s" % filepath)
     with open(filepath, 'r') as f:
         content = f.read()
     return web.Response(content_type='application/javascript', text=content)
 
 async def offer(request):
-    LOGGING.info("offer: new request")
+    LOGGER.info("offer: new request")
     params = await request.json()
-    LOGGING.debug("offer: request params: %s" % params)
+    LOGGER.debug("offer: request params: %s" % params)
     offer = RTCSessionDescription(
         sdp=params['sdp'],
         type=params['type'])
     pc = RTCPeerConnection()
     pcs.add(pc)
 
-    LOGGING.info("Established RTCPeerConnection %s" % pc)
+    LOGGER.info("Established RTCPeerConnection %s" % pc)
 
     # prepare local media
     recorder = MediaBlackhole()
@@ -122,12 +122,12 @@ async def offer(request):
         def on_message(message):
             try:
                 # Send data to ML Server. Currently only sends image height and width.
-                LOGGING.info("Received message, sending to ML server: %s" % message)
+                LOGGER.info("Received message, sending to ML server: %s" % message)
                 data_socket_send.send_string(message)
-                LOGGING.debug("Message to browser: " + str(detectionData.data))
+                LOGGER.debug("Message to browser: " + str(detectionData.data))
                 channel.send(detectionData.data)
             except:
-                LOGGING.error("Failed receiving module data.")
+                LOGGER.error("Failed receiving module data.")
                 channel.send("{}")
 
     @pc.on('iceconnectionstatechange')
@@ -140,15 +140,15 @@ async def offer(request):
     @pc.on('track')
     def on_track(track):
         # Add the CNN Video
-        LOGGING.info('Track %s received' % track.kind)
+        LOGGER.info('Track %s received' % track.kind)
         if track.kind == 'video':
             local_video = VideoTransformTrack(track)
             pc.addTrack(local_video)
-            LOGGING.info("Added local video (cnn).")
+            LOGGER.info("Added local video (cnn).")
 
         @track.on('ended')
         async def on_ended():
-            LOGGING.info('Track %s ended' % track.kind)
+            LOGGER.info('Track %s ended' % track.kind)
             await recorder.stop()
 
     # handle offer
