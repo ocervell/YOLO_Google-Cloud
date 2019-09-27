@@ -101,7 +101,7 @@ class DarknetYOLO(threading.Thread):
         self.output_data.classes = classes
         self.output_data.bbs = bbs
         self.output_data.image_data.image_np = image_np
-        LOGGER.debug("Output: %s" % self.output_data)
+        LOGGER.info("Output: %s" % self.output_data)
 
         time.sleep(self.frames_per_ms)
 
