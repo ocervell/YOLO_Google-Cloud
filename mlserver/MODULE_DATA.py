@@ -1,9 +1,11 @@
 import json
+import logging
 import numpy as np
 
+LOGGER = logging.getLogger(__name__)
 
 class ModuleData:
-    def __init__(self,detection_thread):
+    def __init__(self, detection_thread):
         self.detection_thread = detection_thread
         self.image_height= 0
         self.image_width = 0
@@ -20,6 +22,7 @@ class ModuleData:
         data['scores'] = self.detection_thread.output_data.scores.tolist()
         class_names = []
         for c in self.detection_thread.output_data.classes:
+            LOGGER.info("Class name: %s | Category index: %s", c, self.detection_thread.output_data.category_index)
             cls_name = self.detection_thread.output_data.category_index.get(c)['name']
             class_names.append(cls_name)
         data['classes'] = class_names
@@ -45,4 +48,4 @@ class ModuleData:
             self.image_height = int(data['image_properties']['height'])
             self.image_width = int(data['image_properties']['width'])
         except Exception as e:
-            LOGGING.error("Failed loading new data: %s", str(e))
+            LOGGER.error("Failed loading new data: %s", str(e))
