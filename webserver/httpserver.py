@@ -88,7 +88,7 @@ detectionData = DetectionDataHolder()
 detectionData.start()
 
 async def index(request):
-    filepath = os.path.join(ROOT + '/public/', 'index.html'), 'r')
+    filepath = os.path.join(ROOT + '/public/', 'index.html')
     LOGGING.info("index: new request for %s" % filepath)
     with open(filepath, 'r') as f:
         content = f.read()
