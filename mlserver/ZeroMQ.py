@@ -1,11 +1,14 @@
-import threading
 import base64
+import cv2
+import logging
 import numpy as np
 import time
-from MODULE_DATA import ModuleData
-import cv2
-import base64
+import threading
 import zmq
+
+from MODULE_DATA import ModuleData
+
+LOGGER = logging.getLogger(__name__)
 
 class ImageData:
     def __init__(self):

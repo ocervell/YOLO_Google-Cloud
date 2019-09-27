@@ -88,12 +88,17 @@ detectionData = DetectionDataHolder()
 detectionData.start()
 
 async def index(request):
-    LOGGING.info("index: new request")
-    content = open(os.path.join(ROOT + '/public/', 'index.html'), 'r').read()
+    filepath = os.path.join(ROOT + '/public/', 'index.html'), 'r')
+    LOGGING.info("index: new request for %s" % filepath)
+    with open(filepath, 'r') as f:
+        content = f.read()
     return web.Response(content_type='text/html', text=content)
 
 async def javascript(request):
-    content = open(os.path.join(ROOT + '/public/', 'client.js'), 'r').read()
+    filepath = os.path.join(ROOT + '/public/', 'client.js')
+    LOGGING.info("javascript: new request for %s" % filepath)
+    with open(filepath, 'r') as f:
+        content = f.read()
     return web.Response(content_type='application/javascript', text=content)
 
 async def offer(request):

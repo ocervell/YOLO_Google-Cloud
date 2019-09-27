@@ -51,7 +51,7 @@ class DarknetYOLO(threading.Thread):
         LOGGER.info("Creating data file at %s ..." % filepath)
         num_classes = len(pd.read_csv(filenames,header=None).index.values)
 
-        with open(filepath, "w+"):
+        with open(filepath, "w+") as f:
             LOGGER.info("Writing to data file at %s" % filepath)
             f.write('classes= ' + str(num_classes) + '\n')
             f.write('names= ' + str(filenames) + '\n')
