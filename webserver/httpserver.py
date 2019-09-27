@@ -1,23 +1,23 @@
 import argparse
 import asyncio
+import base64
+import cv2
 import json
 import logging
-import os
 import numpy as np
-import cv2
-from aiohttp import web
-from av import VideoFrame
-
-from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
-from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
-import ssl
-ROOT = os.path.dirname(__file__)
-
-import cv2
-import zmq
-import base64
+import os
 import random
 import threading
+import ssl
+import sys
+import zmq
+
+from aiohttp import web
+from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
+from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
+from av import VideoFrame
+ROOT = os.path.dirname(__file__)
+
 
 logging.basicConfig(
     stream=sys.stdout,
