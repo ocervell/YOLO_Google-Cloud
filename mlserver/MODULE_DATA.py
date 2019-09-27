@@ -21,8 +21,10 @@ class ModuleData:
             h,w)
         data['scores'] = self.detection_thread.output_data.scores.tolist()
         class_names = []
+        LOGGER.info("Data dump: %s" % self.detection_thread.output_data)
+        LOGGER.info("Classes to use: %s" % self.detection_thread.output_data.classes)
         for c in self.detection_thread.output_data.classes:
-            LOGGER.info("Class name: %s | Category index: %s", c, self.detection_thread.output_data.category_index)
+            # LOGGER.info("Class name: %s | Category index: %s", c, self.detection_thread.output_data.category_index)
             cls_name = self.detection_thread.output_data.category_index.get(c)['name']
             class_names.append(cls_name)
         data['classes'] = class_names
