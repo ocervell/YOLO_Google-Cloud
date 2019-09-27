@@ -28,15 +28,6 @@ LOGGER = logging.getLogger(__name__)
 DEBUG = True
 PORT = os.environ.get("YOLO_PORT", 8889)
 
-context = zmq.Context()
-data_socket_send = context.socket(zmq.PUB)
-data_socket_send.connect('tcp://localhost:5556')
-LOGGER.info("Connected to websocket 'tcp://localhost:5556'.")
-
-detectionData = DetectionDataHolder()
-detectionData.start()
-LOGGER.info("Detection data thread started ...")
-
 class VideoTransformTrack(VideoStreamTrack):
     def __init__(self, track):
         super().__init__()
@@ -178,6 +169,16 @@ async def on_shutdown(app):
     pcs.clear()
 
 def run():
+    LOGGER.info("Creating socket ...")
+    context = zmq.Context()
+    data_socket_send = context.socket(zmq.PUB)
+    data_socket_send.connect('tcp://localhost:5556')
+    LOGGER.info("Connected to websocket 'tcp://localhost:5556'.")
+
+    LOGGER.info("Starting Detection data thread ...")
+    detectionData = DetectionDataHolder()
+    detectionData.start()
+
     LOGGER.info("Baking app. ..")
     app = web.Application()
     app.on_shutdown.append(on_shutdown)
