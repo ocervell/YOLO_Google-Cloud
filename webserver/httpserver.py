@@ -175,7 +175,7 @@ async def on_shutdown(app):
     pcs.clear()
 
 def run():
-    LOGGING.info("Baking app. ..")
+    LOGGER.info("Baking app. ..")
     app = web.Application()
     app.on_shutdown.append(on_shutdown)
     app.router.add_get('/', index)
@@ -188,7 +188,7 @@ def run():
     ssl_ctx.load_cert_chain(ROOT + "/ssl/domain.crt",
                             ROOT + "/ssl/domain.key")
 
-    LOGGING.info("Starting app on PORT %s ..." % PORT)
+    LOGGER.info("Starting app on PORT %s ..." % PORT)
     web.run_app(app, port=PORT, ssl_context=ssl_ctx)
 
 if __name__ == '__main__':
