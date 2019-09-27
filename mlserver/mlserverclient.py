@@ -34,7 +34,7 @@ LOGGER.info("Starting DarknetYOLO thread ...")
 thread_yolo = DarknetYOLO(thread_image.image_data,
                           yolo_dir=ROOT + "/model/",
                           score_thresh=0.5,
-                          fps=0.08)
+                          fps=30)
 thread_yolo.start()
 
 
