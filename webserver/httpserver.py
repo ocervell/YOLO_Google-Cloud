@@ -185,7 +185,7 @@ def MAIN():
     app.router.add_get('/', index)
     app.router.add_get('/client.js', javascript)
     app.router.add_post('/offer', offer)
-    app.router.add_static('/static/', ROOT + 'public/static/', name='static',show_index=True)
+    app.router.add_static('/static/', ROOT + '/public/static/', name='static',show_index=True)
 
 
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
