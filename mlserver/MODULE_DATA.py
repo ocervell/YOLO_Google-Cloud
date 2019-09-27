@@ -24,8 +24,10 @@ class ModuleData:
         LOGGER.info("Data dump: %s" % self.detection_thread.output_data)
         LOGGER.info("Classes to use: %s" % self.detection_thread.output_data.classes)
         for c in self.detection_thread.output_data.classes:
-            # LOGGER.info("Class name: %s | Category index: %s", c, self.detection_thread.output_data.category_index)
-            cls_name = self.detection_thread.output_data.category_index.get(c)['name']
+            category_index = self.detection_thread.output_data.category_index
+            if not category_index:
+                continue
+            cls_name = category_index.get(c)['name']
             class_names.append(cls_name)
         data['classes'] = class_names
 
