@@ -189,8 +189,8 @@ def MAIN():
 
 
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_ctx.load_cert_chain("ssl/domain.crt",
-                           "ssl/domain.key")
+    ssl_ctx.load_cert_chain(ROOT + "/ssl/domain.crt",
+                            ROOT + "/ssl/domain.key")
     web.run_app(app, port=port,ssl_context=ssl_ctx)
 
 
