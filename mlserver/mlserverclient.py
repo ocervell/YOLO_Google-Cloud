@@ -31,10 +31,12 @@ thread_image = ZeroMQImageInput(context);
 thread_image.start()
 
 LOGGER.info("Starting DarknetYOLO thread ...")
+fps = float(os.environ.get("FPS", "0.01"))
+score_thresh = float(os.environ.get("SCORE_THRESHOLD", "0.5"))
 thread_yolo = DarknetYOLO(thread_image.image_data,
                           yolo_dir=ROOT + "/model/",
                           score_thresh=0.5,
-                          fps=1)
+                          fps=float(os.environ.get("FPS", "0.01")))
 thread_yolo.start()
 
 
