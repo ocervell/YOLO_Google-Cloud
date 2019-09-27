@@ -59,8 +59,13 @@ class DarknetYOLO(threading.Thread):
 
     def createClassNames(self,yolo_dir, cls_names):
         self.__BEGIN_STRING = ''
-        self.cls_names = [self.__BEGIN_STRING + str(s)
-                            for s in pd.read_csv(cls_names,header=None,names=['LabelName']).LabelName.tolist()]
+        self.cls_names = [
+            self.__BEGIN_STRING + str(s)
+            for s in pd.read_csv(
+                cls_names,
+                header=None,
+                names=['LabelName']).LabelName.tolist()
+        ]
 
         # Remove all of the odd characters
         for indx,x in enumerate(self.cls_names):
@@ -78,7 +83,7 @@ class DarknetYOLO(threading.Thread):
         dark_frame = darknetImage(image_np)
         image_height,image_width,_ = image_np.shape
         results = self.net.detect(dark_frame,self.output_data.score_thresh)
-        LOGGER.debug("Detection results: %s" % results)
+        LOGGER.info("Detection results: %s" % results)
         del dark_frame
         classes = []
         scores = []
