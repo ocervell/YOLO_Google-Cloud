@@ -23,14 +23,14 @@ var canvas = document.querySelector('#canvas'),
     ctx.strokeStyle = '#ff0';
     ctx.lineWidth = 2;
 // Temporary offscreen canvas
-var wcVideoCanvas = document.createElement('canvas'), 
-    ctxWcVideo = wcVideoCanvas.getContext('2d');
-    
-   
+var wcVideoCanvas = document.createElement('canvas'),
+    wcSendVideoCanvas = document.createElement('canvas'),
+    ctxWcVideo = wcVideoCanvas.getContext('2d')
+
 // Update variables
 const webcamUpdateIntervalMS = 100;
 
-// ML Result DATA. 
+// ML Result DATA.
 var currentData = "{}",
     tempData = "{}";
 
