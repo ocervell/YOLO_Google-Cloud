@@ -84,12 +84,12 @@ detectionData = DetectionDataHolder()
 detectionData.start()
 
 async def index(request):
-    content = open(os.path.join(ROOT + 'public/', 'index.html'), 'r').read()
+    content = open(os.path.join(ROOT + '/public/', 'index.html'), 'r').read()
     return web.Response(content_type='text/html', text=content)
 
 
 async def javascript(request):
-    content = open(os.path.join(ROOT + 'public/', 'client.js'), 'r').read()
+    content = open(os.path.join(ROOT + '/public/', 'client.js'), 'r').read()
     return web.Response(content_type='application/javascript', text=content)
 
 
