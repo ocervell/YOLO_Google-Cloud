@@ -27,7 +27,7 @@ logging.basicConfig(
 
 LOGGER = logging.getLogger(__name__)
 DEBUG = True
-PORT = 443
+PORT = os.environ.get("YOLO_PORT", 8889)
 
 context = zmq.Context()
 data_socket_send = context.socket(zmq.PUB)
