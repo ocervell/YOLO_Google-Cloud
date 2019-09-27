@@ -15,15 +15,15 @@ class ImageData:
         self.height = None
 
 class ZeroMQImageInput(threading.Thread):
-    def __init__(self, context, IMAGE_WIDTH = 640 ,IMAGE_HEIGHT = 480):
+    def __init__(self, context, image_width=640 ,image_height=480):
         threading.Thread.__init__(self)
         self.name = "ZeroMQ Image Input Thread"
         self.image_data = ImageData()
         self.done = False
-        self.IMAGE_WIDTH = IMAGE_WIDTH
-        self.IMAGE_HEIGHT = IMAGE_HEIGHT
-        self.cap = []  
-        self.image_data.image_np = np.zeros(shape=(IMAGE_HEIGHT,IMAGE_WIDTH,3))
+        self.image_width = image_width
+        self.image_height = image_height
+        self.cap = []
+        self.image_data.image_np = np.zeros(shape=(image_height, image_width, 3))
         self.currentTime = 0
         self.image_data.isInit = True
         self.footage_socket = context.socket(zmq.SUB)
@@ -31,9 +31,9 @@ class ZeroMQImageInput(threading.Thread):
         self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, str(''))
 
     def run(self):
-        print("Starting " + self.name)
+        LOGGER.info("Starting " + self.name)
         self.updateImg(self.name)
-        print("Exiting " + self.name)
+        LOGGER.info("Exiting " + self.name)
 
     def updateImg(self, threadName):
         while not self.done:
@@ -48,7 +48,7 @@ class ZeroMQImageInput(threading.Thread):
 
     def stop(self):
         self.done = True
-        
+
 class ZeroMQDataHandler(threading.Thread):
     def __init__(self,context, thread_yolo):
         threading.Thread.__init__(self)
@@ -60,8 +60,6 @@ class ZeroMQDataHandler(threading.Thread):
         self.data_socket_rcv = context.socket(zmq.SUB)
         self.data_socket_rcv.bind('tcp://*:5556')
         self.data_socket_rcv.setsockopt_string(zmq.SUBSCRIBE, str(''))
-
-
 
     def run(self):
         print("Starting " + self.name)
@@ -81,5 +79,3 @@ class ZeroMQDataHandler(threading.Thread):
 
     def stop(self):
         self.done = True
-
-   

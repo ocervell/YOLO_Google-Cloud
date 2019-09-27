@@ -1,79 +1,78 @@
+import logging
 import threading
 import time
 import glob
 import numpy as np
+import pandas as pd
 from pydarknet import Detector
 from pydarknet import Image as darknetImage
-import pandas as pd
 from data_structures import OutputClassificationData
 
-
+LOGGER = logging.getLogger(__name__)
 
 class DarknetYOLO(threading.Thread):
 
-    def __init__(self, image_data,
-                         YOLO_DIR,
-                         score_thresh=0.5,
-                         fps=0.08):
-        print("DIRECTORY: " + YOLO_DIR)
-        self.createDataFile(YOLO_DIR)
-        YOLO_DATA =  glob.glob(YOLO_DIR + '*.data')[0]
-        YOLO_CFG =  glob.glob(YOLO_DIR + '*.cfg')[0]
-        YOLO_WEIGHTS =  glob.glob(YOLO_DIR + '*.weights')[0]
+    def __init__(self, image_data, yolo_dir, score_thresh=0.5, fps=0.08):
+        LOGGER.info("Directory: " + yolo_dir)
+        self.createDataFile(yolo_dir)
+        data =  glob.glob(yolo_dir + '*.data')[0]
+        config =  glob.glob(yolo_dir + '*.cfg')[0]
+        weights =  glob.glob(yolo_dir + '*.weights')[0]
+        cls_names =  glob.glob(yolo_dir + '*.names')[0]
 
-        CLASS_NAMES =  glob.glob(YOLO_DIR + '*.names')[0]
+        LOGGER.info("Yolo data: %s" % data)
+        LOGGER.info("Yolo config: %s" % config)
+        LOGGER.info("Yolo weights: %s" % weights)
+        LOGGER.info("Yolo class names: %s" % cls_names)
 
-        self.createClassNames(YOLO_DIR, CLASS_NAMES)
-        ENABLE_BY_DEFAULT = False
+        self.createClassNames(yolo_dir, cls_names)
         self.done = False
         threading.Thread.__init__(self)
-
         self.pause = False
         self.name = "YOLO Predictor Thread"
-
-
         self.image_data = image_data
-        self.net = net = Detector(bytes(YOLO_CFG, encoding="utf-8"), bytes(YOLO_WEIGHTS, encoding="utf-8"), 0,
-               bytes(YOLO_DATA, encoding="utf-8"))
-        self.results = []
 
+        LOGGER.info("Launching detector ...")
+        self.net = net = Detector(
+            bytes(config, encoding="utf-8"),
+            bytes(weights, encoding="utf-8"),
+            0,
+            bytes(data, encoding="utf-8"))
+        self.results = []
         self.output_data = OutputClassificationData()
         self.output_data.score_thresh = score_thresh
         self.frames_per_ms = fps;
+        LOGGER.info("Score thresh: %s" % score_thresh)
+        LOGGER.info("FPS: %s" % fps)
 
+    def createDataFile(self, yolo_dir):
+        filepath = yolo_dir + yolo_dir.split('/')[-2] + '.data'
+        filenames = glob.glob(yolo_dir + '*.names')[0]
+        LOGGER.info("Creating data file at %s ..." % filepath)
+        num_classes = len(pd.read_csv(filenames,header=None).index.values)
 
-    def createDataFile(self, YOLO_DIR):
-        FILE_DATA = YOLO_DIR + YOLO_DIR.split('/')[-2] + '.data'
-        FILE_NAMES = glob.glob(YOLO_DIR + '*.names')[0]
-        NUM_CLASSES = len(pd.read_csv(FILE_NAMES,header=None).index.values)
-        f= open(FILE_DATA,"w+")
-        f.write('classes= ' + str(NUM_CLASSES) + '\n')
-        f.write('names= ' + str(FILE_NAMES) + '\n')
-        f.close()
+        with open(filepath, "w+"):
+            LOGGER.info("Writing to data file at %s" % filepath)
+            f.write('classes= ' + str(num_classes) + '\n')
+            f.write('names= ' + str(filenames) + '\n')
+            f.close()
 
-    def createClassNames(self,YOLO_DIR, CLASS_NAMES):
+    def createClassNames(self,yolo_dir, cls_names):
         self.__BEGIN_STRING = ''
-        self.CLASS_NAMES = [self.__BEGIN_STRING + str(s)
-                            for s in pd.read_csv(CLASS_NAMES,header=None,names=['LabelName']).LabelName.tolist()]
+        self.cls_names = [self.__BEGIN_STRING + str(s)
+                            for s in pd.read_csv(cls_names,header=None,names=['LabelName']).LabelName.tolist()]
 
         # Remove all of the odd characters
-        for indx,x in enumerate(self.CLASS_NAMES):
+        for indx,x in enumerate(self.cls_names):
             if "'" in x:
-                self.CLASS_NAMES[indx] = x.replace("'","")
+                self.cls_names[indx] = x.replace("'","")
 
-
-
-
-    def getLabelIndex(self,class_):
+    def getLabelIndex(self, class_):
         class_ = str(class_.decode("utf-8"))
         # Get the remapped label
         label = class_
-
-        indx = self.CLASS_NAMES.index(class_) + 1
+        indx = self.cls_names.index(class_) + 1
         return indx
-
-
-
 
     def predict_once(self, image_np):
         dark_frame = darknetImage(image_np)
@@ -113,16 +112,21 @@ class DarknetYOLO(threading.Thread):
             else:
                 self.output_data.bbs = np.asarray([])
                 time.sleep(2.0) # Sleep for 2 seconds
+
     def run(self):
-        print("Starting " + self.name)
+        LOGGER.info("Starting " + self.name)
         self.predict(self.name)
         print("Exiting " + self.name)
+
     def pause_predictor(self):
         self.pause = True
+
     def continue_predictor(self):
         self.pause = False
+
     def stop(self):
         self.done = True
+
     def getImage(self):
         '''
         Returns the image that we will use for prediction.
