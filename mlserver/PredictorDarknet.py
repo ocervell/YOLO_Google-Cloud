@@ -78,7 +78,7 @@ class DarknetYOLO(threading.Thread):
         dark_frame = darknetImage(image_np)
         image_height,image_width,_ = image_np.shape
         results = self.net.detect(dark_frame,self.output_data.score_thresh)
-        LOGGING.debug("Detection results: %s" % results)
+        LOGGER.debug("Detection results: %s" % results)
         del dark_frame
         classes = []
         scores = []
@@ -109,7 +109,7 @@ class DarknetYOLO(threading.Thread):
         while not self.done:
             image_np = self.getImage()
             if not self.pause:
-                LOGGING.info("Run predict_once on image %s" % image_np)
+                LOGGER.info("Run predict_once on image %s" % image_np)
                 self.predict_once(image_np)
             else:
                 self.output_data.bbs = np.asarray([])
