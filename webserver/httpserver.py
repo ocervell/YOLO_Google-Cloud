@@ -191,6 +191,7 @@ def MAIN():
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_ctx.load_cert_chain(ROOT + "/ssl/domain.crt",
                             ROOT + "/ssl/domain.key")
+    print("Starting app on port %s ..." % port)
     web.run_app(app, port=port,ssl_context=ssl_ctx)
 
 
