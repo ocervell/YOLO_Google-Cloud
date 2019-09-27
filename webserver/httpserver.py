@@ -83,6 +83,7 @@ class DetectionDataHolder(threading.Thread):
         while not self.done:
             try:
                 self.data = self.data_socket_rcv.recv_string()
+                LOGGER.info("Received %s from socket" % self.data)
             except:
                 LOGGER.error("Error occured receiving data on ML client")
 
