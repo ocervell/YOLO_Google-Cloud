@@ -16,8 +16,6 @@ from aiohttp import web
 from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
 from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
 from av import VideoFrame
-ROOT = os.path.dirname(__file__)
-
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -25,6 +23,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S')
 
+ROOT = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 DEBUG = True
 PORT = os.environ.get("YOLO_PORT", 8889)
@@ -33,6 +32,10 @@ context = zmq.Context()
 data_socket_send = context.socket(zmq.PUB)
 data_socket_send.connect('tcp://localhost:5556')
 LOGGER.info("Connected to websocket 'tcp://localhost:5556'.")
+
+detectionData = DetectionDataHolder()
+detectionData.start()
+LOGGER.info("Detection data thread started ...")
 
 class VideoTransformTrack(VideoStreamTrack):
     def __init__(self, track):
@@ -65,9 +68,11 @@ class DetectionDataHolder(threading.Thread):
         self.name = 'ZeroMQ DataHandler'
         self.done = False
         self.data = "{}"
+        LOGGER.info("Connecting to %s" % 'tcp://*:5557 ...')
         self.data_socket_rcv = context.socket(zmq.SUB)
         self.data_socket_rcv.bind('tcp://*:5557')
         self.data_socket_rcv.setsockopt_string(zmq.SUBSCRIBE, str(''))
+        LOGGER.info("Connected to %s" % 'tcp://*:5557 ...')
 
     def run(self):
         LOGGER.info("Starting " + self.name)
@@ -83,9 +88,6 @@ class DetectionDataHolder(threading.Thread):
 
     def stop(self):
         self.done = True
-
-detectionData = DetectionDataHolder()
-detectionData.start()
 
 async def index(request):
     filepath = os.path.join(ROOT + '/public/', 'index.html')
