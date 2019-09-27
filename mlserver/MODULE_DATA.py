@@ -1,6 +1,7 @@
 import json
 import logging
 import numpy as np
+import pprint
 
 LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class ModuleData:
             cls_name = category_index.get(c)['name']
             class_names.append(cls_name)
         data['classes'] = class_names
-
+        LOGGER.info("JSON dump: %s" % pprint.pformat(data))
         return json.dumps(data)
 
     def fix_bb_coords(self,bbs,h,w):
