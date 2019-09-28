@@ -20,7 +20,7 @@ class ModuleData:
             self.detection_thread.output_data.bbs.copy(),
             h,w)
         data['scores'] = self.detection_thread.output_data.scores.tolist()
-        data['classes'] = self.detection_thread.output_data.classes
+        data['classes'] = self.detection_thread.output_data.classes.tolist()
         LOGGER.info("JSON dump: %s" % pprint.pformat(data))
         return json.dumps(data)
 
