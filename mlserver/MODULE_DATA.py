@@ -28,7 +28,7 @@ class ModuleData:
             category_index = self.detection_thread.output_data.category_index
             LOGGING.info("Class: %s | Category index: %s", c, category_index)
             if not category_index:
-                LOGGING.warning("Category index not defined. Data: %s" % data)
+                LOGGER.warning("Category index not defined. Data: %s" % data)
                 continue
             cls_name = category_index.get(c)['name']
             class_names.append(cls_name)
