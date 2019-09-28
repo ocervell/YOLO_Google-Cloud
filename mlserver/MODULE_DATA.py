@@ -16,23 +16,11 @@ class ModuleData:
         data = {}
         data['type'] = 'detection_data'
         data['name'] = self.detection_thread.name
-
         data['bbs'] = self.fix_bb_coords(
             self.detection_thread.output_data.bbs.copy(),
             h,w)
         data['scores'] = self.detection_thread.output_data.scores.tolist()
-        class_names = []
-        LOGGER.info("Data dump: %s" % self.detection_thread.output_data)
-        LOGGER.info("Classes to use: %s" % self.detection_thread.output_data.classes)
-        for c in self.detection_thread.output_data.classes:
-            category_index = self.detection_thread.output_data.category_index
-            LOGGER.info("Class: %s | Category index: %s", c, category_index)
-            if not category_index:
-                LOGGER.warning("Category index not defined. Data: %s" % data)
-                continue
-            cls_name = category_index.get(c)['name']
-            class_names.append(cls_name)
-        data['classes'] = class_names
+        data['classes'] = self.detection_thread.output_data.classes
         LOGGER.info("JSON dump: %s" % pprint.pformat(data))
         return json.dumps(data)
 

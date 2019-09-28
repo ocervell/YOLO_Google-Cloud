@@ -98,8 +98,7 @@ class DarknetYOLO(threading.Thread):
             Y_ = (y + h/2)/image_height
             bbs.append([Y, X,Y_,X_])
             scores.append(score)
-            index = self.getLabelIndex(class_)
-            classes.append(index)
+            classes.append(class_)
         scores = np.asarray(scores)
         classes = np.asarray(classes)
         bbs = np.asarray(bbs)
@@ -108,9 +107,9 @@ class DarknetYOLO(threading.Thread):
         self.output_data.classes = classes
         self.output_data.bbs = bbs
         self.output_data.image_data.image_np = image_np
-        LOGGER.info("Output: %s" % self.output_data)
-        LOGGER.info("Output: %s" % {
+        LOGGER.info("Output data: %s" % {
             'scores': scores,
+            'bbs': bbs,
             'classes': classes,
             'image_np': image_np
         })
