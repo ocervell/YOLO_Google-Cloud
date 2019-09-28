@@ -26,7 +26,7 @@ class ModuleData:
         LOGGER.info("Classes to use: %s" % self.detection_thread.output_data.classes)
         for c in self.detection_thread.output_data.classes:
             category_index = self.detection_thread.output_data.category_index
-            LOGGING.info("Class: %s | Category index: %s", c, category_index)
+            LOGGER.info("Class: %s | Category index: %s", c, category_index)
             if not category_index:
                 LOGGER.warning("Category index not defined. Data: %s" % data)
                 continue
