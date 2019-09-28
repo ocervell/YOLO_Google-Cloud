@@ -72,6 +72,8 @@ class DarknetYOLO(threading.Thread):
             if "'" in x:
                 self.cls_names[indx] = x.replace("'","")
 
+        LOGGER.info("Class names: %s" % self.cls_names)
+
     def getLabelIndex(self, class_):
         class_ = str(class_.decode("utf-8"))
         # Get the remapped label
